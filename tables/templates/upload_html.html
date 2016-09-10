@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.6-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.6-dist/js/bootstrap.js">
+    <title></title>
+</head>
+<body>
+<div class="well">
+<form role="form" method="POST" enctype="multipart/form-data" action="">
+    {% csrf_token %}
+    
+Выбрать файлы:<br><input name="file" class="form-control" id="file" type="file" multiple><br>
+<input type="submit"  accept="application/pdf" />
+</form>
+</div>
+<div class="right">
+    <p>Расписание</p>
+    {% for gr in group %}
+        {% if gr.name_group == "unknown"%}
+            <div class="errors">
+            <p><li><a href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></li></p>
+            </div>
+        {% else %}
+    <p><li><a href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></li></p>
+        {% endif %}
+    {% endfor %}
+        </div>
+</div>
+<style type="text/css">
+    .well {
+    border-style: outset;
+    position:inherit;
+    left:50px;
+    top:50px;
+    float:left;
+    margin-right: 55px;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+    .right{
+    float: left;
+    }
+    .errors{
+        color:red;
+    }
+    .errors a{
+        color: red;
+    }
+</style>
+</body>
+</html>
