@@ -10,9 +10,8 @@
 <div class="well">
 <form role="form" method="POST" enctype="multipart/form-data" action="">
     {% csrf_token %}
-    
-Выбрать файлы:<br><input name="file" class="form-control" id="file" type="file" multiple><br>
-<input type="submit"  accept="application/pdf" />
+Выбрать файлы:<br><input name="file" class="form-control" id="uploadHtml" type="file" multiple><br>
+<input onclick="return check()"  type="submit"  accept="application/pdf" />
 </form>
 </div>
 <div class="right">
@@ -26,6 +25,13 @@
     <p><li><a href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></li></p>
         {% endif %}
     {% endfor %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
         </div>
 </div>
 <style type="text/css">
@@ -49,5 +55,12 @@
         color: red;
     }
 </style>
+<script type="application/javascript">
+    function check(){
+        if( document.getElementById("uploadHtml").files.length == 0 ){
+            return false;
+        }
+    }
+</script>
 </body>
 </html>

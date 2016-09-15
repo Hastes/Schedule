@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/static/jquery/jquery-3.1.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+{% for obj in sched %}
+    <div>
+        <div class="spoiler_links"><p><b>{{ obj.date }}</b></p></div>
+        <div class="spoiler_body">
+        <table>
+            {% for tr in obj.schedule %}
+            <tr>
+                {% for td in tr %}
+                    {% if td == None %}
+                        <td>_</td>
+                    {% else %}
+                    <td>{{ td }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+                {% endfor %}
+        </table>
+        </div>
+    </div>
+{% endfor %}
+
+<script type="application/javascript">
+    $(document).ready(function(){
+ $('.spoiler_links').click(function(){
+     $(this).parent().children('div.spoiler_body').toggle('normal');
+     return false;
+ });
+});
+    </script>
+    <style type="text/css">
+     .links {cursor: pointer;}
+     .spoiler_body {display:none;}
+ .spoiler_links {cursor:pointer;}
+</style>
+</body>
+</html>

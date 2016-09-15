@@ -5,14 +5,14 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 from string import whitespace
 
+
 class ParserTable:
 
-    # def __init__(self, path_html):
-    #     self.path_html = path_html
+    def __init__(self, page: str):
+        self.page = page
 
-    def data_tr(path_html):
-        page = open(path_html)
-        page_parse = bleach.clean(page.read(),tags=['head','meta','td','font','b','i','p','title','table','body','html','tr','br'])
+    def data_tr(self):
+        page_parse = bleach.clean(self.page,tags=['head','meta','td','font','b','i','p','title','table','body','html','tr','br'])
         soup = BeautifulSoup(page_parse, "html.parser")
         tr_mas = []
         td_mas = []
@@ -24,13 +24,12 @@ class ParserTable:
             td_mas=[]
         return tr_mas
 
-    def name_group(file):
-        soup = BeautifulSoup(file, "html.parser")
-        try:
-            group = str(soup.find_all('font',color='#ff00ff')[0].text).strip(whitespace)
-        except IndexError:
-            return "unknown"
+    def name_group(self):
+        soup = BeautifulSoup(self.page, "html.parser")
+        group = str(soup.find_all('font',color='#ff00ff')[0].text).strip(whitespace)       #если не находит имя - исключение
         return group
+
+
 
 
 # table = ParserTable.name_group('7.html')

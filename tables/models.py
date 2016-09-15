@@ -1,6 +1,11 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
+class Department(models.Model):
+    name_department = models.CharField(max_length=80)
+
+
 
 class Group(models.Model):
     name_group = models.CharField(max_length=80)
@@ -11,11 +16,14 @@ class Group(models.Model):
     def __str__(self):
         return self.name_group
 
-
 class Schedule(models.Model):
     group_key = models.ForeignKey(Group)
     date = models.DateTimeField(auto_now=True)
-    schedule_file = models.FileField()
+    schedule = ArrayField(ArrayField(
+        models.TextField(blank=True),size=15
+        ),
+        size=9
+    )
 
     def get_filename(self):
         list = str(self.schedule_file).split('/')
