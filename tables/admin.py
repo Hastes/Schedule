@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Group,Schedule
+from .models import Group,Schedule,Faculty
 # Register your models here.
 
 class ScheduleAdmin(admin.ModelAdmin):
@@ -14,6 +14,6 @@ class ScheduleInline(admin.TabularInline):
 class GroupAdmin(admin.ModelAdmin):
     inlines = [ScheduleInline]
 
-
+admin.site.register(Faculty)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Schedule, ScheduleAdmin)

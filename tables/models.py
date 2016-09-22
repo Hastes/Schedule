@@ -1,14 +1,22 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+# факультет >>> группа >>> расписание
 
-# Create your models here.
-class Department(models.Model):
-    name_department = models.CharField(max_length=80)
+# факультет
+# курс
+# загрузка файла
 
+class Faculty(models.Model):
+    name_fac = models.CharField(max_length=80)
+    def __unicode__(self):
+        return self.name_fac
 
+    def __str__(self):
+        return self.name_fac
 
 class Group(models.Model):
     name_group = models.CharField(max_length=80)
+    facult_key = models.ForeignKey(Faculty)
 
     def __unicode__(self):
         return self.name_group
@@ -24,10 +32,12 @@ class Schedule(models.Model):
         ),
         size=9
     )
+    class Meta:
+        ordering = ['-id']
 
-    def get_filename(self):
-        list = str(self.schedule_file).split('/')
-        return list[list.__len__()-1]
+    # def get_filename(self):
+    #     list = str(self.schedule_file).split('/')
+    #     return list[list.__len__()-1]
 
 
 

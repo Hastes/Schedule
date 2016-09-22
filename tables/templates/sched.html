@@ -1,32 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <script src="/static/jquery/jquery-3.1.0.min.js"></script>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-{% for obj in sched %}
-    <div>
-        <div class="spoiler_links"><p><b>{{ obj.date }}</b></p></div>
-        <div class="spoiler_body">
-        <table>
-            {% for tr in obj.schedule %}
-            <tr>
-                {% for td in tr %}
+{% block content %}
+    {% if sched %}
+<div>
+    <div class="spoiler_links"><p><b>Обновлено: {{ sched.date }}</b></p></div>
+    <div class="spoiler_body">
+    <table class="table table-bordered">
+        {% for tr in sched.schedule %}
+        <tr>
+            {% for td in tr %}
+                {% if forloop.first %}
+                   <th>{{ td }}</th>
+                {% else %}
                     {% if td == None %}
                         <td>_</td>
                     {% else %}
-                    <td>{{ td }}</td>
+                        <td>{{ td }}</td>
                     {% endif %}
-                {% endfor %}
-            </tr>
-                {% endfor %}
-        </table>
-        </div>
+                {% endif %}
+            {% endfor %}
+        </tr>
+            {% endfor %}
+    </table>
     </div>
-{% endfor %}
+</div>
+    {% else %}
+        <p>Расписание не найдено</p>
+    {% endif %}
 
 <script type="application/javascript">
     $(document).ready(function(){
@@ -37,9 +37,10 @@
 });
     </script>
     <style type="text/css">
+     .table td{
+         text-align: center;
+     }
      .links {cursor: pointer;}
-     .spoiler_body {display:none;}
  .spoiler_links {cursor:pointer;}
 </style>
-</body>
-</html>
+{% endblock content %}

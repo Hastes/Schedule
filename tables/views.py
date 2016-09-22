@@ -1,14 +1,18 @@
 from django.shortcuts import render, render_to_response,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect
-from .models import Schedule,Group
+from .models import Schedule,Group,Faculty
 from .parser2 import ParserTable
 
 from django.contrib import messages
 
 # Create your views here.
+def schedule(request):
+    return render_to_response('faculty.html',{'faculty': Faculty.objects.all()})
 
-def button_page(request):
-    group = Group.objects.all()
+
+def button_page(request,pk):
+    group = Group.objects.filter(facult_key = pk)
+    faculty = Faculty.objects.get(pk=pk)
     success = 0
     lose = 0
     if request.POST:
@@ -27,20 +31,21 @@ def button_page(request):
                 messages.error(request, 'В документе %s не было обнаружено расписание' % f.name)
                 continue
             data_tr = equalizer(get.data_tr())
-            instance,created = Group.objects.get_or_create(name_group = name)
+            instance,created = Group.objects.get_or_create(facult_key= Faculty.objects.get(pk=pk),name_group = name)
             Schedule.objects.create(schedule = data_tr, group_key=instance)
         messages.info(request,'Успешно загружено: %s, неудачно: %s'%(success,lose))
-    return render(request,'upload_html.html',{'group':group})
+    return render(request,'upload_html.html',{'group':group,'faculty':faculty})
 
 def get_sched(request,pk):
-    sched = Schedule.objects.filter(group_key=pk)
-    group = get_object_or_404(Group,id = pk)
-    return render_to_response('sched.html',{'sched':sched,'group':group})
+    try:
+        sched = Schedule.objects.filter(group_key=pk)[0]
+    except IndexError:
+        sched = None
+    return render_to_response('sched.html',{'sched':sched})
 
 
 def equalizer(data):
     largest_length = 0 # To define the largest length
-
     for l in data:
         if len(l) > largest_length:
             largest_length = len(l) # Will define the largest length in data.
@@ -88,10 +93,11 @@ def equalizer(data):
 #     new_file.close()
 #     return path_replace + f.name
 
+
 class GetDataFromParser:
-    def __init__(self,f):
+    def __init__(self, f):
         file = f.read()
-        decode_list = ['cp1251','utf-8']
+        decode_list = ['cp1251', 'utf-8']
         for decode in decode_list:
             try:
                 file = file.decode(decode)
@@ -102,10 +108,10 @@ class GetDataFromParser:
             raise ValueError
         else:
             file = file.encode('utf-8')
-        self.file = file
+        self.parser = ParserTable(file)
 
     def group_name(self):
-        return ParserTable(self.file).name_group()
+        return self.parser.name_group()
 
     def data_tr(self):
-        return ParserTable(self.file).data_tr()
+        return self.parser.data_tr()

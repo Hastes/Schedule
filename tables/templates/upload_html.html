@@ -1,39 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/static/bootstrap-3.3.6-dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/bootstrap-3.3.6-dist/js/bootstrap.js">
-    <title></title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="right">
+    <h4>Группы:</h4>
+    {% for gr in group %}
+    <p><a class="btn btn-default" href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></p>
+    {% endfor %}
+        </div>
 <div class="well">
 <form role="form" method="POST" enctype="multipart/form-data" action="">
     {% csrf_token %}
-Выбрать файлы:<br><input name="file" class="form-control" id="uploadHtml" type="file" multiple><br>
+Добавить расписание <b>{{ faculty }}</b><br><input name="file" class="form-control" id="uploadHtml" type="file" multiple><br>
 <input onclick="return check()"  type="submit"  accept="application/pdf" />
-</form>
-</div>
-<div class="right">
-    <p>Расписание</p>
-    {% for gr in group %}
-        {% if gr.name_group == "unknown"%}
-            <div class="errors">
-            <p><li><a href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></li></p>
-            </div>
-        {% else %}
-    <p><li><a href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></li></p>
-        {% endif %}
-    {% endfor %}
-    {% if messages %}
-    <ul class="messages">
+    <div class="errors">
+        {% if messages %}
+        <ul class="messages">
         {% for message in messages %}
         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
-    </ul>
+        </ul>
     {% endif %}
-        </div>
+    </div>
+</form>
 </div>
+
 <style type="text/css">
     .well {
     border-style: outset;
@@ -44,15 +34,14 @@
     margin-right: 55px;
     margin-left: 20px;
     margin-top: 20px;
+
+    transition: 1s;
 }
+    .well:hover{
+     border-color: #31b0d5;
+    }
     .right{
     float: left;
-    }
-    .errors{
-        color:red;
-    }
-    .errors a{
-        color: red;
     }
 </style>
 <script type="application/javascript">
@@ -62,5 +51,4 @@
         }
     }
 </script>
-</body>
-</html>
+{% endblock content %}

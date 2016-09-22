@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if faculty %}
+            <h2>ФАКУЛЬТЕТЫ:</h2>
+            {% for obj in faculty %}
+                <p><a class="btn btn-default" href="{% url 'groups' obj.pk %}">{{ obj.name_fac }}</a></p>
+            {% endfor %}
+    {% endif %}
+{% endblock content %}

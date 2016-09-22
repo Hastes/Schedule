@@ -19,7 +19,8 @@ from tables import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.button_page),
+    url(r'^$',views.schedule, name='schedule'),
+    url(r'^groups/(?P<pk>\d+)/$', views.button_page,name='groups'),
     url(r'^group/(?P<pk>\d+)/$',views.get_sched,name="get_sched")
    # url(r'^upload/$',views.upload_html, name="upload_html"),
 ]
