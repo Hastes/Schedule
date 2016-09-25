@@ -7,22 +7,24 @@
     <p><a class="btn btn-default" href="{% url 'get_sched' gr.pk %} ">{{ gr.name_group }}</a></p>
     {% endfor %}
         </div>
-<div class="well">
-<form role="form" method="POST" enctype="multipart/form-data" action="">
-    {% csrf_token %}
-Добавить расписание <b>{{ faculty }}</b><br><input name="file" class="form-control" id="uploadHtml" type="file" multiple><br>
-<input onclick="return check()"  type="submit"  accept="application/pdf" />
-    <div class="errors">
-        {% if messages %}
-        <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
+    {% if request.user.is_authenticated %}
+        <div class="well">
+        <form role="form" method="POST" enctype="multipart/form-data" action="">
+            {% csrf_token %}
+        Добавить расписание <b>{{ faculty }}</b><br><input name="file" class="form-control" id="uploadHtml" type="file" multiple><br>
+        <input onclick="return check()"  type="submit"  accept="application/pdf" />
+            <div class="errors">
+                {% if messages %}
+                <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            </div>
+        </form>
+        </div>
     {% endif %}
-    </div>
-</form>
-</div>
 
 <style type="text/css">
     .well {
@@ -34,11 +36,10 @@
     margin-right: 55px;
     margin-left: 20px;
     margin-top: 20px;
-
     transition: 1s;
 }
     .well:hover{
-     border-color: #31b0d5;
+        border-color: #808580;
     }
     .right{
     float: left;

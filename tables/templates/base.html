@@ -2,12 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="/static/jquery/jquery-3.1.0.js"></script>
-    <script src="/static/bootstrap-3.3.6-dist/js/bootstrap.js"></script>
-    <link rel="stylesheet" href="/static/bootstrap-3.3.6-dist/css/bootstrap.css">
+    <script src="/static/js/jquery-3.1.1.min.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg">
     <title>Расписание</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Logout</a>
+        <h3>Вы вошли как: {{ request.user }}</h3>
+    {% else %}
+        <a href="{% url 'auth' %}">Login</a> /
+        <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <div class="content">
     {% block content %}
     {% endblock content %}

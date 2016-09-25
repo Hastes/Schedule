@@ -2,12 +2,14 @@ from django.shortcuts import render, render_to_response,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import Schedule,Group,Faculty
 from .parser2 import ParserTable
-
+from django.contrib.auth import login,authenticate,logout
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib import messages
+from django.http import Http404
 
 # Create your views here.
 def schedule(request):
-    return render_to_response('faculty.html',{'faculty': Faculty.objects.all()})
+    return render(request,'faculty.html',{'faculty': Faculty.objects.all()})
 
 
 def button_page(request,pk):
@@ -16,6 +18,8 @@ def button_page(request,pk):
     success = 0
     lose = 0
     if request.POST:
+        if not request.user.is_authenticated:
+            raise Http404
         for f in request.FILES.getlist('file'):
             # https://docs.djangoproject.com/es/1.10/ref/contrib/postgres/fields/#arrayfield
             try:
@@ -41,8 +45,32 @@ def get_sched(request,pk):
         sched = Schedule.objects.filter(group_key=pk)[0]
     except IndexError:
         sched = None
-    return render_to_response('sched.html',{'sched':sched})
+    return render(request,'sched.html',{'sched':sched})
 
+
+def register(request):
+    new_user = UserCreationForm(request.POST or None)
+    if new_user.is_valid():
+        new_user.save()
+        return HttpResponse('Вы были успешно зарегистрированы')
+    return render(request,'register&login.html',{'form':new_user})
+
+
+def authview(request):
+    args = {}
+    args['form']  = AuthenticationForm()
+    if request.POST:
+        authuser = AuthenticationForm(data=request.POST)
+        if authuser.is_valid():
+            user = authenticate(username = request.POST["username"],password = request.POST["password"])
+            messages.add_message(request,level = messages.INFO,message = "Вы успешно авторизованы")
+            login(request,user)
+            return HttpResponseRedirect('/')
+    return render(request,'register&login.html',args)
+
+def logoutview(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 def equalizer(data):
     largest_length = 0 # To define the largest length
@@ -55,44 +83,6 @@ def equalizer(data):
             remainder = largest_length - len(l) # Difference of length of particular list and largest length
             data[i].extend([None for i in range(remainder)]) # Add None through the largest length limit
     return data
-
-# def upload_html(request):
-#     return HttpResponseRedirect('/')
-# def replace_schedule(f):
-#     dirname = timezone.now().strftime('%Y.%m.%d.%H.%M.%S')
-#     media = "media_cdn"
-#     path_file = '/old_html/'
-#     path_replace = '/replace_html/' + dirname + "/"
-#
-#     try:
-#         os.makedirs(media+path_replace)
-#     except FileExistsError:
-#         pass
-#
-#     try:
-#         os.makedirs(media+path_file)
-#     except FileExistsError:
-#         pass
-#
-#     file = open(media+path_file+f.name,'wb+')    #Временный файл
-#     for chunk in f.chunks():
-#         file.write(chunk)
-#     file.close()
-#     p = ParserTable(f)
-#     mass = p.data_tr(media+path_file+f.name)
-#     shutil.rmtree(media+path_file)                   #удаление директории с временным файлом
-#
-#     new_file = open(media+path_replace+f.name,'w')
-#     new_file.write("<table>\n")
-#     for td in mass:
-#         new_file.write("<tr>")
-#         for tr in td:
-#             new_file.write("<td>"+tr+"</td>\n")
-#         new_file.write("</tr>\n")
-#     new_file.write("</table>\n")
-#     new_file.close()
-#     return path_replace + f.name
-
 
 class GetDataFromParser:
     def __init__(self, f):

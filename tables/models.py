@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-# факультет >>> группа >>> расписание
 
-# факультет
-# курс
-# загрузка файла
 
 class Faculty(models.Model):
     name_fac = models.CharField(max_length=80)
@@ -35,9 +31,6 @@ class Schedule(models.Model):
     class Meta:
         ordering = ['-id']
 
-    # def get_filename(self):
-    #     list = str(self.schedule_file).split('/')
-    #     return list[list.__len__()-1]
 
 
 

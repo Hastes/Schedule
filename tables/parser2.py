@@ -28,7 +28,7 @@ class ParserTable:
         return tr_mas
 
     def name_group(self):
-        group = str(self.soup.find_all('font', color='#ff00ff')[0].text).strip(whitespace)  # если не находит имя - исключение
+        group = str(self.soup.find_all('font', color='#ff00ff')[0].text).strip(whitespace)
         return group
 
 # table = ParserTable.name_group('7.html')
